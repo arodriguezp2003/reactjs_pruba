@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-
+import firebase from 'firebase';
 export default class Client extends Component {
 
   constructor(props) {
@@ -21,7 +21,8 @@ export default class Client extends Component {
   handleForm(event) {
      event.preventDefault();
      console.log("Se envio el formulario", this.state.client);
-     this.props.handleClient(this.state.client);
+     let cliente = this.state.client;
+   firebase.database().ref('CLIENTES/' + cliente.rut).set(cliente);
   }
 
   handleRut(event) {
@@ -51,15 +52,15 @@ export default class Client extends Component {
         <form onSubmit={this.handleForm}>
           <input
             onChange={this.handleRut}
-            value={this.state.client.rut}
+
             type="text"/>
           <input
             onChange={this.handleName}
-            value={this.state.client.name}
+
             type="text"/>
           <input
             onChange={this.handleLastName}
-            value={this.state.client.lastname}
+
             type="text"/>
           <input type="submit"/>
 

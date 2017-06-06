@@ -1,5 +1,7 @@
 import React from 'react';
 import Client from './client';
+import firebase from 'firebase';
+
 class Clients extends React.Component {
 
   constructor(props){
@@ -7,47 +9,32 @@ class Clients extends React.Component {
 
     this.state = {
       selectedClient: {},
-      clients: [
-        {
-          rut: 16327,
-          name: "Alejandro",
-          lastname: "Rodriguez"
-        },
-        {
-          rut: 16322,
-          name: "Gonzalo",
-          lastname: "Azocar"
-        },
-        {
-        rut: 163327,
-        name: "Esteban",
-        lastname: "Fajardo"
-        }
-      ]
+      clients: []
     }
-    this.handleClient = this.handleClient.bind(this);
+    firebase.database().ref('CLIENTES').on('value', snap =>{
+      let clientes = snap.val()
+      console.log(clientes);
+      var arr = []
+      for(let p in clientes) {
+        let obj = {
+          rut: p ,
+          name: clientes[p].name ,
+          lastname: clientes[p].lastname
+        }
+        arr.push(obj);
+      }
+      console.log(arr);
+      this.setState({clients: arr});
+    })
+
   }
 
- handleClient(client) {
-   var clients = this.state.clients;
-   var arr = []
-
-   for(let p in clients) {
-     if(clients[p].rut == client.rut) {
-       arr.push(client)
-     } else {
-       arr.push(clients[p])
-     }
-   }
-
-   this.setState({clients: arr});
- }
   render() {
     return(
       <div className="clients">
         <h1 className="textomasgrande">Clientes</h1>
         <hr/>
-        <Client handleClient={this.handleClient} client={this.state.selectedClient} />
+        <Client client={this.state.selectedClient} />
         <table>
           <thead>
             <tr>
